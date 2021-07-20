@@ -5,6 +5,56 @@ import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import { listNotes } from './graphql/queries';
 import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
 
+import { makeStyles } from '@material-ui/core/styles';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import DeleteIcon from '@material-ui/icons/Delete';
+import AddIcon from "@material-ui/icons/Add";
+import TextField from '@material-ui/core/TextField';
+import { Fab } from "@material-ui/core";
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
+
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    maxWidth: '36ch',
+    backgroundColor: theme.palette.background.paper,
+    margin: theme.spacing(3),
+  },
+  inline: {
+    display: 'inline',
+  },
+  input: {
+    display: 'none',
+  },
+  textField: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: '25ch',
+    color: "#2882F8",
+  },
+  div: {
+    color: "#FFF",
+    backgroundColor: "#f29316",
+    width: '100%',
+    margin: '20px',
+    padding: '15px',
+  },
+  camera: {
+    color: "#f29316",
+  }
+}));
+
+
 const initialFormState = { name: '', description: '' }
 
 function App() {
@@ -52,40 +102,118 @@ function App() {
     await Storage.put(file.name, file);
     fetchNotes();
   }
+
+  const classes = useStyles();
   
   return (
     <div className="App">
-      <h1>My Notes App</h1>
-      <input
-        type="file"
-        onChange={onChange}
-      />
-      <input
-        onChange={e => setFormData({ ...formData, 'name': e.target.value})}
-        placeholder="Note name"
-        value={formData.name}
-      />
-      <input
-        onChange={e => setFormData({ ...formData, 'description': e.target.value})}
-        placeholder="Note description"
-        value={formData.description}
-      />
-      <button onClick={createNote}>Create Note</button>
-      <div style={{marginBottom: 30}}>
-      {
-        notes.map(note => (
-          <div key={note.id || note.name}>
-            <h2>{note.name}</h2>
-            <p>{note.description}</p>
-            <button onClick={() => deleteNote(note)}>Delete note</button>
-            {
-              note.image && <img src={note.image} style={{width: 400}} alt=""/>
-            }
-          </div>
-        ))
-      }
+      <div className={classes.div}>
+      <Typography variant="h4" component="h4" >
+        Listagem de notas
+      </Typography>
       </div>
-      <AmplifySignOut />
+      <div>
+         <TextField 
+            id="filled-basic" 
+            label="Título"
+            variant="filled" 
+            className={classes.textField}
+            onChange={e => setFormData({ ...formData, 'name': e.target.value})}
+            placeholder="Título"
+            value={formData.name}
+          />
+         
+         <TextField 
+            id="filled-basic" 
+            label="Descrição"
+            variant="filled" 
+            className={classes.textField}
+            onChange={e => setFormData({ ...formData, 'description': e.target.value})}
+            placeholder="Descrição"
+            value={formData.description}
+          />
+
+        <input accept="image/*" className={classes.input} id="icon-button-file" type="file" onChange={onChange}/>
+        <label htmlFor="icon-button-file">
+          <IconButton className={classes.camera} aria-label="upload picture" component="span">
+            <PhotoCamera />
+          </IconButton>
+        </label>
+{/*
+        <label htmlFor="upload-photo">
+          <input
+            style={{ display: "none" }}
+            id="upload-photo"
+            name="upload-photo"
+            type="file"
+            onChange={onChange}
+          />
+          <Fab
+            color="secondary"
+            size="small"
+            component="span"
+            aria-label="add"
+            variant="extended">
+            <AddIcon /> Procurar imagem
+          </Fab>
+        </label>
+ */}       
+        <Fab 
+          className={classes.camera}
+          size="small" 
+          component="span" 
+          aria-label="add" 
+          onClick={createNote}
+          >
+          <AddIcon />
+        </Fab>
+
+      </div>
+     
+          <List className={classes.root}>
+          <Grid item xs={12} md={12}>
+          {
+            notes.map(note => (
+              <div key={note.id || note.name}>
+              <ListItem alignItems="flex-start">
+                  <ListItemAvatar>
+                  {
+                    note.image &&
+                  <Avatar  src={note.image} alt=""/>
+                  }
+                  </ListItemAvatar>
+
+                  <ListItemText
+                    primary={note.name}
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          component="span"
+                          variant="body2"
+                          className={classes.inline}
+                          color="textPrimary"
+                        >
+                          {note.description}
+                        </Typography>
+                        
+                      </React.Fragment>
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton edge="end" aria-label="delete" onClick={() => deleteNote(note)} variant="contained" color="secondary">
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+              </ListItem>
+              <Divider variant="inset" component="li" /> 
+            </div>
+            ))
+          }
+          
+          </Grid>
+          </List>
+          <AmplifySignOut />
+
     </div>
   );
 }
