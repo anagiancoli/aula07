@@ -4,8 +4,15 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Amplify from 'aws-amplify';
+import { I18n } from 'aws-amplify';
+import AmplifyI18n from 'amplify-i18n';
 import config from './aws-exports';
+
 Amplify.configure(config);
+
+const locales = ["en", "fr", "pt-BR"]
+AmplifyI18n.configure(locales)
+I18n.setLanguage("pt-BR")
 
 
 ReactDOM.render(
