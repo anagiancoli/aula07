@@ -19,6 +19,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddIcon from "@material-ui/icons/Add";
 import TextField from '@material-ui/core/TextField';
+import Box from '@material-ui/core/Box';
 import { Fab } from "@material-ui/core";
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 
@@ -29,6 +30,11 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '36ch',
     backgroundColor: theme.palette.background.paper,
     margin: theme.spacing(3),
+  },
+  itens: {
+    width: '90%',
+    margin: '10px',
+    padding: '10px',
   },
   inline: {
     display: 'inline',
@@ -45,9 +51,13 @@ const useStyles = makeStyles((theme) => ({
   div: {
     color: "#FFF",
     backgroundColor: "#f29316",
-    width: '100%',
-    margin: '20px',
+    margin: '10px',
+    marginBottom: '20px',
     padding: '15px',
+  },
+  campos: {
+    margin: '10px',
+    padding: '10px',
   },
   camera: {
     color: "#f29316",
@@ -106,13 +116,15 @@ function App() {
   const classes = useStyles();
   
   return (
+    
     <div className="App">
+      <Box boxShadow={4} width="auto">
       <div className={classes.div}>
       <Typography variant="h4" component="h4" >
         Listagem de notas
       </Typography>
       </div>
-      <div>
+      <div className={classes.campos}>
          <TextField 
             id="filled-basic" 
             label="Título"
@@ -122,7 +134,7 @@ function App() {
             placeholder="Título"
             value={formData.name}
           />
-         
+
          <TextField 
             id="filled-basic" 
             label="Descrição"
@@ -170,7 +182,7 @@ function App() {
 
       </div>
      
-          <List className={classes.root}>
+          <List className={classes.itens}>
           <Grid item xs={12} md={12}>
           {
             notes.map(note => (
@@ -213,8 +225,9 @@ function App() {
           </Grid>
           </List>
           <AmplifySignOut />
-
+     </Box>
     </div>
+    
   );
 }
 
